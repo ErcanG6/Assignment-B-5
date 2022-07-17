@@ -1,71 +1,79 @@
 import json
+
+
+#Implementation of NobelData class
+
 class NobelData:
-    def __init__(self, file_name = 'nobels.json'):
-        with open(file_name) as nobel_file:
-            self.nobel_data = json.load(nobel_file)
 
-    def search_nobel(self, year, category):
-        winners = []
-        for entry in self.nobel_data:
-            if entry['year'] == year and entry['category'] == category:
-                winners.append(entry['laureates'][0]['surname'])
-        return sorted(winners)
+    #Implementation of init
 
-nd = NobelData()
-print(nd.search_nobel("2001", "economics"))
-
-'''
-Output should be:
-
-['Akerlof', 'Mackey', 'Spence']
-import json
-
-class NobelData():
     def __init__(self):
-        with open('nobels.json') as json_file:
-            self.nobels = json.load(json_file)
 
-    def search_nobel(self, year, category):
-        winners = []
-        for nobel in self.nobels:
-            if nobel['year'] == year and nobel['category'] == category:
-                winners.append(nobel['laureates'][0]['surname'])
-        return sorted(winners)
+        #responseObject = requests.get("http://api.nobelprize.org/v1/prize.json")
 
+        #load json format data
 
+        with open("nobels.json","r") as read_file:
+            self.data = json.load(read_file)
 
-if __name__ == '__main__':
-    nd = NobelData()
-    print(nd.search_nobel("2001", "economics"))
-    print(nd.search_nobel("1975", "literature"))
-    print(nd.search_nobel("1945", "peace"))
-    print(nd.search_nobel("1968", "physics"))
-    print(nd.search_nobel("1998", "medicine"))
-    print(nd.search_nobel("1903", "chemistry"))
+    #Implementation of search_nobel method
 
+    def search_nobel(self,year,category):
 
-The init method should read the json file and save the data into a private data member of the class.
+        #Declare n and store the length of self.data['prizes']
 
-The search_nobel method should take as parameters a year and a category, and return the surname of the winner (or winners, in the case of a shared prize) for that category for that year.
+        lengthofPrizes= len(self.data['prizes'])
 
-The year parameter to search_nobel will be a string (e.g. "1975"), not a number.
+        #Declare winners as type of list
 
-You can assume that the categories are: "chemistry", "economics", "literature", "peace", "physics", and "medicine".
+        winners=[]
 
-You can assume that the only possible values for the category parameter are those six strings.
+        #Declare surnamesofthewinners as type of list
 
-You can assume that the only possible values for the year parameter are years for which there is data in the JSON file (i.e. 1901 through 2016).
+        surnamesofthewinners=[]
 
-You can assume that there is at most one winner for each category in each year (i.e. there will never be two or more people sharing the same prize in a single year).
+        #Iterate loop
 
-You can assume that the name of each winner will be in the format "Firstname Lastname".
+        for each in range(0,lengthofPrizes):
+
+            #check self.data['prizes'][each]['year'] is equal to year
+
+            #and check self.data['prizes'][each]['category'] is equal to category
+
+            if(self.data['prizes'][each]['year']==year and self.data['prizes'][each]['category']==category):
+
+                #assign self.data['prizes'][each]['laureates'] to winners
+
+                winners=self.data['prizes'][each]['laureates']
+
+                break
+
+        #caclulate the length of winners and store in lengthofWinners
+
+        lengthofWinners=len(winners)
+
+        #Iterate the loop
+
+        for each in range(0,lengthofWinners):
+
+            #append the winners[each]['surname'] to surnamesofthewinners
+
+            surnamesofthewinners.append(winners[each]['surname'])
+
+        #sort the surnamesofthewinners
+
+        surnamesofthewinners.sort()
+
+        return surnamesofthewinners
+
+#Declare an object for NobelData
 
 nd = NobelData()
-print(nd.search_nobel("1975", "peace"))
+
+#call serach_nobel method
+
+nd.search_nobel("2001", "economics")
+
+#Display statement
+
 print(nd.search_nobel("2001", "economics"))
-print(nd.search_nobel("1982", "medicine"))
-print(nd.search_nobel("1984", "literature"))
-print(nd.search_nobel("1975", "chemistry"))
-print(nd.search_nobel("1926", "physics"))
-print(nd.search_nobel("1955", "physics"))
-print(nd.search_nobel("1930", "economics"))
